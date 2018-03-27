@@ -268,34 +268,19 @@ $data='<?xml version="1.0" encoding="utf-8"?>
 </params>
 </methodResponse>';
 
-        //convert the XML result into array
-        $xml=simplexml_load_string($data);
 
-
- 
-
-
+       $xml = simplexml_load_string($data);
 RecurseXML($xml);
 }
- 
- function RecurseXML($xml,$parent="") { 
-
-$dataholder=[];
-  // $child_count = 2;
-   foreach($xml as $key=>$value)    
-      if(RecurseXML($value,$parent.".".$key) ==0) { 
+function RecurseXML($xml,$parent="") { 
+       $f = fopen('data.csv', 'w');
+foreach ($xml as $key=>$value) {
+  if(RecurseXML($value,$parent.".".$key) ==0) { 
         $vals=((string)$value);
-
-    for($i=0;$i<1;$i++){  
-         //print( $vals . "<BR>\n"); 
-         array_push($dataholder, $vals);
-        print( $dataholder[$i] ." array index ".$i . "<BR>\n");
-
-      } 
-
-      //$child_count++;     
-   } 
-  // return $child_count; 
+fputcsv($f, get_object_vars($value),',','"');
 }
+}
+fclose($f);
+    }
 
         ?>

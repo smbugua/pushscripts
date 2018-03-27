@@ -40,37 +40,18 @@ $header = array(
 
         //convert the XML result into array
         $array_data = json_decode(json_encode(simplexml_load_string($data)), true);
-        $xml=simplexml_load_string($data);
 
-  /*
+
   print_r('<pre>');
   print_r($array_data);
   print_r('</pre>');
 
-  $fp = fopen($no.'data.xml', 'w');
+
+
+}
+
+  $fp = fopen('data.xml', 'w');
 
 fwrite($fp, $data);
 fclose($fp);
-*/
-
-function RecurseXML($xml,$parent="") 
-{ 
-   $child_count = 0; 
-   foreach($xml as $key=>$value) 
-   { 
-      $child_count++;     
-      if(RecurseXML($value,$parent.".".$key) == 0)  // no childern, aka "leaf node" 
-      { 
-         print($parent . "." . (string)$key . " = " . (string)$value . "<BR>\n");        
-      }     
-   } 
-   return $child_count; 
-} 
-
-
-RecurseXML($xml);
-
-}
- 
-
         ?>

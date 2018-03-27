@@ -14,6 +14,7 @@ $xml = new SimpleXMLElement(
    <son> 
      <name>Bill</name> 
    </son> 
+
    <daughter> 
      <name>Jeri</name> 
      <husband> 
@@ -27,7 +28,8 @@ $xml = new SimpleXMLElement(
      </son>     
      <son> 
        <name>Mark</name> 
-     </son>     
+     </son> 
+         
      <son> 
        <name>Josh</name> 
          <wife> 
