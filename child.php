@@ -1,4 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?php
+//Pg Connection
+  $pg_host = "172.23.178.145"; 
+  $pg_user = "monitoring_apps"; 
+  $pg_pass = "monitoring_apps"; 
+  $pg_port = "7755";
+  $pg_db = "mdsa_test";
+  echo "before create connection </br>"; 
+  $pg_con = pg_connect ("host=$pg_host port=$pg_port dbname=$pg_db user=$pg_user password=$pg_pass"); 
+  echo "After connection is created </br>"; 
+
+  $resultset=pg_query($pg_con,"SELECT subscriber_fk FROM public.tbl_decisioning2 LIMIT 2");
+
+  while($row=pg_fetch_array($resultset,null, PGSQL_ASSOC)){
+
+$no=$row['subscriber_fk'];
+echo $no."<br>";
+$data='<?xml version="1.0" encoding="utf-8"?>
 <methodResponse>
 <params>
 <param>
@@ -249,4 +266,31 @@
 </value>
 </param>
 </params>
-</methodResponse>
+</methodResponse>';
+
+        //convert the XML result into array
+        $xml=simplexml_load_string($data);
+
+
+ 
+
+
+RecurseXML($xml);
+
+}
+ 
+ function RecurseXML($xml,$parent="") { 
+   $child_count = 0; 
+   foreach($xml as $key=>$value) 
+   { 
+      $child_count++;     
+      if(RecurseXML($value,$parent.".".$key) ==0)  // no childern, aka "leaf node" 
+      { 
+         print((string)$key . " = " . (string)$value . "<BR>\n");        
+        
+      }     
+   } 
+   return $child_count; 
+}
+
+        ?>
