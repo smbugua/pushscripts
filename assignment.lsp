@@ -1,0 +1,93 @@
+;state-machine
+(
+ (:has-loan-on-queue)
+ (:prepaid-only)
+ (:menu
+  ("1"  (and (= queue-count 0) (>= max-loanable 10000)   (= subscriber-flags 1))  :confirm-airtime   :menu-airtime-again (session+ :amount-requested 10000   :serviceq 1000 :loan-service :regular :amount-net 10000   :amount-gross 10000   :loan-type :airtime :advance-name "10000Ush"))
+  ("2"  (and (= queue-count 0) (>= max-loanable 5000)  (= subscriber-flags 1))  :confirm-airtime   :menu-airtime-again (session+ :amount-requested 5000   :serviceq 500 :loan-service :regular  :amount-net 5000   :amount-gross 5000   :loan-type :airtime :advance-name "5000Ush"))
+  ("3"  (and (= queue-count 0) (>= max-loanable 2000)  (= subscriber-flags 1))  :confirm-airtime   :menu-airtime-again (session+ :amount-requested 2000   :serviceq 200 :loan-service :regular  :amount-net 2000   :amount-gross 2000   :loan-type :airtime :advance-name "2000Ush"))
+  ("4"  (and (= queue-count 0) (>= max-loanable 1000)  (= subscriber-flags 1))  :confirm-airtime   :menu-airtime-again (session+ :amount-requested 1000  :serviceq 100 :loan-service :regular :amount-net 1000  :amount-gross 1000  :loan-type :airtime :advance-name "1000Ush"))
+  ("5"  (and (= queue-count 0) (>= max-loanable 500)  (= subscriber-flags 1)) :confirm-airtime    :menu-airtime-again (session+ :amount-requested 500  :serviceq 50 :loan-service :regular :amount-net 500  :amount-gross 500  :loan-type :airtime :advance-name "500Ush" ))
+  ("6"  (and (= queue-count 0) (>= max-loanable 200)  (= subscriber-flags 1)) :confirm-airtime    :menu-airtime-again (session+ :amount-requested 200  :serviceq 20 :loan-service :regular :amount-net 200  :amount-gross 200  :loan-type :airtime :advance-name "200Ush" ))
+  ("7" nil               :trigger-rec)
+  ("8" nil               :help)
+  ("9" nil               :language-change)
+  (:any nil              :menu-airtime-again))
+   (:menu-airtime-again
+  ("1"  (and (= queue-count 0) (>= max-loanable 10000)   (= subscriber-flags 1))  :confirm-airtime   :menu-airtime-again (session+ :amount-requested 10000   :serviceq 1000 :loan-service :regular :amount-net 10000   :amount-gross 10000   :loan-type :airtime :advance-name "10000Ush"))
+  ("2"  (and (= queue-count 0) (>= max-loanable 5000)  (= subscriber-flags 1))  :confirm-airtime   :menu-airtime-again (session+ :amount-requested 5000   :serviceq 500 :loan-service :regular  :amount-net 5000   :amount-gross 5000   :loan-type :airtime :advance-name "5000Ush"))
+  ("3"  (and (= queue-count 0) (>= max-loanable 2000)  (= subscriber-flags 1))  :confirm-airtime   :menu-airtime-again (session+ :amount-requested 2000   :serviceq 200 :loan-service :regular  :amount-net 2000   :amount-gross 2000   :loan-type :airtime :advance-name "2000Ush"))
+  ("4"  (and (= queue-count 0) (>= max-loanable 1000)  (= subscriber-flags 1))  :confirm-airtime   :menu-airtime-again (session+ :amount-requested 1000  :serviceq 100 :loan-service :regular :amount-net 1000  :amount-gross 1000  :loan-type :airtime :advance-name "1000Ush"))
+  ("5"  (and (= queue-count 0) (>= max-loanable 500)  (= subscriber-flags 1)) :confirm-airtime    :menu-airtime-again (session+ :amount-requested 500  :serviceq 50 :loan-service :regular :amount-net 500  :amount-gross 500  :loan-type :airtime :advance-name "500Ush" ))
+  ("6"  (and (= queue-count 0) (>= max-loanable 200)  (= subscriber-flags 1)) :confirm-airtime    :menu-airtime-again (session+ :amount-requested 200  :serviceq 20 :loan-service :regular :amount-net 200  :amount-gross 200  :loan-type :airtime :advance-name "200Ush" ))
+  ("7" nil               :trigger-rec)
+  ("8" nil               :help)
+  ("9" nil               :language-change)
+  (:any nil              :menu-airtime-again))
+  (:confirm-airtime
+  ("1"  nil :lend-airtime)
+  ("2"  nil :menu)
+  (:any nil :confirm-airtime-again))
+  (:confirm-airtime-again
+  ("1"  nil :lend-airtime)
+  ("2"  nil :menu)
+  (:any nil :confirm-airtime-again))
+  (:lend-airtime)
+  (:lend-airtime-failed)
+  (:trigger-rec)
+  )
+;Renderer
+(
+ (:menu
+ ((and (= max-qualified 0))(:en "You have Unpaid debt.Dial *155*7# to Repay debt"))
+  ((>  queue-count 0)      (:en "Sorry your request was not successful please try again later"))
+  ((and (>  max-loanable 199)   (= loan-balance 0))   (:en "Welcome to Bererako Please Select:"))
+  ((and (>= max-loanable 10000)   (= queue-count 0))    (:en "Get 10000"))
+  ((and (>= max-loanable 5000)  (= queue-count 0))    (:en "2 Get 5000"))
+  ((and (>= max-loanable 2000)  (= queue-count 0))    (:en "3 Get 2000"))
+  ((and (>= max-loanable 1000)  (= queue-count 0))    (:en "4 Get 1000"))
+  ((and (>= max-loanable 500)  (= queue-count 0))    (:en "5 Get 500"))
+  ((and (>= max-loanable 200)  (= queue-count 0))    (:en "6 Get 200"))
+  (nil   (:en "7 Repay Debt"))
+  (nil   (:en "8 FAQS"))
+  (nil   (:en "9 Language Change"))
+ )
+ (:menu-airtime-again
+ ((and (= max-qualified 0))(:en "You have Unpaid debt.Dial *155*7# to Repay debt"))
+  ((>  queue-count 0)      (:en "Sorry your request was not successful please try again later"))
+  ((and (>  max-loanable 199)   (= loan-balance 0))   (:en "Welcome to Bererako Please Select:"))
+  ((and (>= max-loanable 10000)   (= queue-count 0))    (:en "Get 10000"))
+  ((and (>= max-loanable 5000)  (= queue-count 0))    (:en "2 Get 5000"))
+  ((and (>= max-loanable 2000)  (= queue-count 0))    (:en "3 Get 2000"))
+  ((and (>= max-loanable 1000)  (= queue-count 0))    (:en "4 Get 1000"))
+  ((and (>= max-loanable 500)  (= queue-count 0))    (:en "5 Get 500"))
+  ((and (>= max-loanable 200)  (= queue-count 0))    (:en "6 Get 200"))
+  (nil   (:en "7 Repay Debt"))
+  (nil   (:en "8 FAQS"))
+  (nil   (:en "9 Language Change"))
+ )
+ (:confirm-airtime
+ ((>= amount-net 200 )(:en ("You have applied for a loan of":amount-net " Ush.You will be charged 10% service charge while making repayment.")))
+  (nil  (:en ("1 Confirm")))
+  (nil  (:en ("2 Go Back"))))
+  (:confirm-airtime-again
+ ((<= amount-net 200 )(:en ("You have applied for a loan of":amount-net " Ush.You will be charged 10% service charge while making repayment.")))
+  (nil  (:en ("1 Confirm")))
+  (nil  (:en ("2 Go Back"))))
+   (:lend-airtime
+  ((>= amount-net 200) (:en ("You have successfully Received ":amount-net " Ush! 10% Service Fee will be charged Upon Refund")))
+  )
+ (:lend-airtime-failed
+  (nil (:en ("Sorry, Your request was not successful try again later...")))
+  )
+  (:trigger-rec
+((> loan-balance 0) (:en "Dear customer, your refund request is being processed."))
+((= loan-balance 0) (:en "You do not have an unpaid balance."))
+)
+ )
+;initiator
+(
+ ((> queue-count 0) () :has-loan-on-queue)
+ ((= ussd-string "155#") () :menu)
+ ((and (= ussd-string "155#") (> loan-balance 0)) () :trigger-rec)
+)

@@ -1,0 +1,6 @@
+<?php
+// Create a cURL handle
+
+$cmd="curl -verbose -i -X POST 'http://172.30.16.20:10010/Air' --data '<?xml version='1.0' encoding='UTF-8'?><methodCall><methodName>GetBalanceAndDate</methodName><params><param><value><struct><member><name>originNodeType</name><value><string>EXT</string></value></member><member><name>originHostName</name><value><string>mdswzc</string></value></member><member><name>originTransactionID</name><value><string>1550580131360407564</string></value></member><member><name>originTimeStamp</name><value><dateTime.iso8601>20180126T08:14:56+0200</dateTime.iso8601></value></member><member><name>subscriberNumber</name><value><string>254737126802</string></value></member><member><name>subscriberNumberNAI</name><value><i4>1</i4></value></member></struct></value></param></params></methodCall>' -H 'Content-Type: text/xml'  -H 'User-Agent: MDSALS/3.1/2.0' -H 'Authorization: Basic YWNzOnBhc3N3b3JkQGFjcw==' -H 'Host: 172.23.178.143:10010'";
+$output = shell_exec($cmd);
+echo "<pre>$output</pre>";
