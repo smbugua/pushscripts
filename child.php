@@ -276,18 +276,21 @@ $data='<?xml version="1.0" encoding="utf-8"?>
 
 
 RecurseXML($xml);
-
 }
  
  function RecurseXML($xml,$parent="") { 
+
+$dataholder=[];
    $child_count = 0; 
    foreach($xml as $key=>$value) 
    { 
       $child_count++;     
       if(RecurseXML($value,$parent.".".$key) ==0)  // no childern, aka "leaf node" 
       { 
-         print((string)$key . " = " . (string)$value . "<BR>\n");        
-        
+        $vals=((string)$key . " = " . (string)$value);
+         //print( $vals . "<BR>\n"); 
+         array_push($dataholder, $vals);
+        print( $dataholder[0] . "<BR>\n");
       }     
    } 
    return $child_count; 
