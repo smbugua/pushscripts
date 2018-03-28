@@ -277,7 +277,7 @@ function RecurseXML($xml,$parent="") {
 foreach ($xml as $key=>$value) {
   if(RecurseXML($value,$parent.".".$key) ==0) { 
         $vals=((string)$value);
-fputcsv($f, get_object_vars($value),',','"');
+fputcsv($f, get_object_vars($xml),',','"');
 }
 }
 fclose($f);

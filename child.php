@@ -9,7 +9,7 @@
   $pg_con = pg_connect ("host=$pg_host port=$pg_port dbname=$pg_db user=$pg_user password=$pg_pass"); 
   echo "After connection is created </br>"; 
 
-  $resultset=pg_query($pg_con,"SELECT subscriber_fk FROM public.tbl_decisioning2 LIMIT 2");
+  $resultset=pg_query($pg_con,"SELECT td2.subscriber_fk FROM public.tbl_decisioning2 td2 WHERE td2.subscriber_fk NOT IN(SELECT subscriberno FROM tbl_xmldata where subscriberno is not null ) LIMIT 2");
 
   while($row=pg_fetch_array($resultset,null, PGSQL_ASSOC)){
 
@@ -268,34 +268,33 @@ $data='<?xml version="1.0" encoding="utf-8"?>
 </params>
 </methodResponse>';
 
-        //convert the XML result into array
+        //convert the XML result into a file
         $xml=simplexml_load_string($data);
+         $fp = fopen('data.xml', 'w');
+fwrite($fp, $data);
+fclose($fp);
+//post to staging db on local
+$host='localhost';
+$db='test';
+$user='root';
+$password='';
+$market='KE';//SWAZI OR CAME
+$con=mysqli_connect("$host","$user","$password","$db");
+mysqli_query($con,"DROP TABLE IF EXISTS `$market.vals`;");
+mysqli_query($con,"CREATE TABLE `$market.vals`(id int(11) NOT NULL,name varchar(200) NOT NULL,value varchar(200) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+mysqli_query($con,"ALTER TABLE `$market.vals`ADD PRIMARY KEY (id);");
+mysqli_query($con,"ALTER TABLE `$market.vals` MODIFY id int(11) NOT NULL AUTO_INCREMENT;");
+libxml_use_internal_errors(true);
+if (!mysqlI_query($con,"LOAD XML LOCAL INFILE 'data.xml' INTO TABLE `$market.vals` ROWS IDENTIFIED BY '<member>'")) {
 
+    echo "<script>location.replace('index.php')</script>";
+echo "<script>alert('Failed Import !')</script>";
+}elseif (mysqlI_query($con,"LOAD XML LOCAL INFILE 'data.xml' INTO TABLE `$market.vals` ROWS IDENTIFIED BY '<member>'")) {
+echo "'success'</script>";
+   //echo "<script>location.replace('postgres.php')</script>";
 
- 
-
-
-RecurseXML($xml);
 }
  
- function RecurseXML($xml,$parent="") { 
-
-$dataholder=[];
-  // $child_count = 2;
-   foreach($xml as $key=>$value)    
-      if(RecurseXML($value,$parent.".".$key) ==0) { 
-        $vals=((string)$value);
-
-    for($i=0;$i<1;$i++){  
-         //print( $vals . "<BR>\n"); 
-         array_push($dataholder, $vals);
-        print( $dataholder[$i] ." array index ".$i . "<BR>\n");
-
-      } 
-
-      //$child_count++;     
-   } 
-  // return $child_count; 
 }
 
         ?>

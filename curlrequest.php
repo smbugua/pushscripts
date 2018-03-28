@@ -45,13 +45,13 @@ $header = array(
   print_r('<pre>');
   print_r($array_data);
   print_r('</pre>');
+ $fp = fopen('data.xml', 'w');
 
+fwrite($fp, $data);
+fclose($fp);
 
 
 }
 
-  $fp = fopen('data.xml', 'w');
-
-fwrite($fp, $data);
-fclose($fp);
+ 
         ?>
