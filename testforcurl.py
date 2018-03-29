@@ -11,7 +11,7 @@ cur = myConnection.cursor()
 #sql queries
 cur.execute("SELECT subscriber_fk FROM public.tbl_decisioning2 ")
 subscriber_fk = cur.fetchone()[0]
-print (subscriber_fk)
+print subscriber_fk
 url="http://172.30.16.42:10010/Air"
 #headers = {'content-type': 'application/soap+xml'}
 headers = {'content-type': 'text/xml',
@@ -21,6 +21,7 @@ headers = {'content-type': 'text/xml',
 body = "<?xml version='1.0' encoding=\'UTF-8\'?><methodCall><methodName>GetBalanceAndDate</methodName><params><param><value><struct><member><name>originNodeType</name><value><string>EXT</string></value></member><member><name>originHostName</name><value><string>mdsar</string></value></member><member><name>originTransactionID</name><value><string>2704750469498169163</string></value></member><member><name>originTimeStamp</name><value><dateTime.iso8601>20180322T12:33:17+0300</dateTime.iso8601></value></member><member><name>subscriberNumber</name><value><string>254"+str(subscriber_fk)+"</string></value></member><member><name>subscriberNumberNAI</name><value><i4>1</i4></value></member></struct></value></param></params></methodCall>"
 
 response = requests.post(url,data=body,headers=headers)
+content= response.content
 
 def xmlparser(xml):
 		#start to destructure the xml request and creating dicts 
@@ -30,14 +31,14 @@ def xmlparser(xml):
 	dict3=dict1['value']['string']
 	#dict4=dict3[]
 	#print (dict1)
-	print (dict2)
-	print (dict3)
+	print dict2
+	print dict3
 	dt=datetime.datetime.now()
 	cur.execute("INSERT into tbl_xmldata(subscriberno,name,value,datestamp)values(%s,%s,%s,%s)",(subscriber_fk,str(dict2),str(dict3),dt))
 	myConnection.commit()
-	print("inserted")
+	print "inserted"
 
 #parse response	
-xmlparser(response)
+xmlparser(content)
 
 myConnection.close()
