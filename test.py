@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#script to curl a remote AIR and break down response into an array then post the data recovered in to a postgres db
 import psycopg2
 import requests
 import os
