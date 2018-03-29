@@ -9,6 +9,7 @@ import datetime
 myConnection = psycopg2.connect( host="172.23.178.145", user="monitoring_apps", password="monitoring_apps", dbname="mdsa_test", port="7755" )
 cur = myConnection.cursor()
 #sql queries
+print datetime.datetime.now()
 cur.execute("SELECT subscriber_fk FROM public.tbl_decisioning2 ")
 for subscriber_fk_array in cur.fetchall():
 	subscriber_fk=subscriber_fk_array[0]
@@ -23,6 +24,7 @@ for subscriber_fk_array in cur.fetchall():
 	response = requests.post(url,data=body,headers=headers)
 	content= response.content
 	print "content fetched"
+	print datetime.datetime.now()
 	#print response.content
 	#start to destructure the xml request and creating dicts 
 	dict1= dict(xmltodict.parse(content)['methodResponse']['params']['param']['value']['struct']['member'][0])
@@ -34,7 +36,8 @@ for subscriber_fk_array in cur.fetchall():
 	print (dict3)
 	dt=datetime.datetime.now()
 	cur.execute("INSERT into tbl_xmldata(subscriberno,name,value,datestamp)values(%s,%s,%s,%s)",(subscriber_fk,str(dict2),str(dict3),dt))
-	myConnection.commit()
+	myConnection.commit()	
+	print datetime.datetime.now()
 	print("inserted")
 	#parse response	
 	xmltodict.parse(content)
