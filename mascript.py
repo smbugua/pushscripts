@@ -6,14 +6,16 @@ import requests
 import os
 import xmltodict 
 import datetime
+import time
 myConnection = psycopg2.connect( host="172.23.178.145", user="monitoring_apps", password="monitoring_apps", dbname="mdsa_test", port="7755" )
 cur = myConnection.cursor()
 #sql queries
-print datetime.datetime.now()
+#print datetime.datetime.now()
+print "Started...."
 cur.execute("SELECT subscriber_fk FROM public.tbl_decisioning2 ")
 for subscriber_fk_array in cur.fetchall():
 	subscriber_fk=subscriber_fk_array[0]
-	print subscriber_fk
+	#print subscriber_fk
 	url="http://172.30.16.42:10010/Air"
 	#headers = {'content-type': 'application/soap+xml'}
 	headers = {'content-type': 'text/xml',
@@ -23,8 +25,8 @@ for subscriber_fk_array in cur.fetchall():
 	body = "<?xml version='1.0' encoding=\'UTF-8\'?><methodCall><methodName>GetBalanceAndDate</methodName><params><param><value><struct><member><name>originNodeType</name><value><string>EXT</string></value></member><member><name>originHostName</name><value><string>mdsar</string></value></member><member><name>originTransactionID</name><value><string>2704750469498169163</string></value></member><member><name>originTimeStamp</name><value><dateTime.iso8601>20180322T12:33:17+0300</dateTime.iso8601></value></member><member><name>subscriberNumber</name><value><string>254"+str(subscriber_fk)+"</string></value></member><member><name>subscriberNumberNAI</name><value><i4>1</i4></value></member></struct></value></param></params></methodCall>"
 	response = requests.post(url,data=body,headers=headers)
 	content= response.content
-	print "content fetched"
-	print datetime.datetime.now()
+	#print "content fetched"
+	#print datetime.datetime.now()
 	#print response.content
 	#start to destructure the xml request and creating dicts 
 	dict1= dict(xmltodict.parse(content)['methodResponse']['params']['param']['value']['struct']['member'][0])
@@ -32,14 +34,15 @@ for subscriber_fk_array in cur.fetchall():
 	dict3=dict1['value']['string']
 	#dict4=dict3[]
 	#print (dict1)
-	print (dict2)
-	print (dict3)
+	#print (dict2)
+	#print (dict3)
 	dt=datetime.datetime.now()
 	cur.execute("INSERT into tbl_xmldata(subscriberno,name,value,datestamp)values(%s,%s,%s,%s)",(subscriber_fk,str(dict2),str(dict3),dt))
 	myConnection.commit()	
-	print datetime.datetime.now()
-	print("inserted")
+	#print datetime.datetime.now()
+	#print("inserted")
 	#parse response	
 	xmltodict.parse(content)
-
+	time.sleep (0.3)
+	
 myConnection.close()
